@@ -1,5 +1,5 @@
-#ifndef CESAR_H
-#define CESAR_H
+#ifndef CAESAR_H
+#define CAESAR_H
 
 #include <iostream>
 #include <cstdint>
@@ -7,14 +7,14 @@
 
 using namespace std;
 
-class Cesar{
+class Caesar{
 private:
 	uint8_t key;
 	uint8_t keyRange;
 	bool onlyAlpha;
 
 public:
-	Cesar(uint8_t, uint8_t, bool);
+	Caesar(uint8_t, uint8_t, bool);
 
 	uint8_t getKey();
 	void setKey(uint8_t);
@@ -29,5 +29,7 @@ public:
 	string decrypt(string);
 
 };
+
+
 
 #endif
