@@ -9,18 +9,17 @@ using namespace std;
 
 class Caesar{
 private:
-	uint8_t key;
-	uint8_t keyRange;
+	int key;
+	int keyRange;
 	bool onlyAlpha;
 
 public:
-	Caesar(uint8_t, uint8_t, bool);
+	Caesar(int, bool);
 
-	uint8_t getKey();
-	void setKey(uint8_t);
+	int getKey();
+	void setKey(int);
 
-	uint8_t getKeyRange();
-	void setKeyRange(uint8_t);
+	int getKeyRange();
 
 	bool isOnlyAlpha();
 	void setOnlyAlpha(bool);

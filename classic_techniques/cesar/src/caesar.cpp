@@ -1,31 +1,23 @@
-#include "caesar.h"
+#include "../include/caesar.h"
 
 
-Caesar::Caesar(uint8_t key, uint8_t keyRange, bool onlyAlpha) : keyRange(keyRange){
+Caesar::Caesar(int key, bool onlyAlpha) {
 	this->setOnlyAlpha(onlyAlpha);
+	this->keyRange = onlyAlpha ? 26 : 95;
 	this->setKey(key);
 }
 
-uint8_t Caesar::getKey(){
+int Caesar::getKey(){
 	return this->key;
 }
 
-void Caesar::setKey(uint8_t key){
-	
+void Caesar::setKey(int key){
 	this->key = key % this->getKeyRange();
 }
 
-uint8_t Caesar::getKeyRange(){
+int Caesar::getKeyRange(){
 	return this->keyRange;
 }
-
-void Caesar::setKeyRange(uint8_t keyRange){
-	this->keyRange = keyRange;
-
-	if (this->getKeyRange() > 26)
-		this->setOnlyAlpha(false);
-}
-
 
 bool Caesar::isOnlyAlpha(){
 	return this->onlyAlpha;
@@ -70,7 +62,7 @@ string Caesar::decrypt(string cipherMessage){
 
 	for(int i = 0; i < cipherMessage.length(); i++){
 		bool isCapitalized = (clearMessage[i] > 64 && clearMessage[i] < 91);
-		bool isNotCapitalized = (clearMessage[i] > 96 && clearMessage[i] < 122);
+		bool isNotCapitalized = (clearMessage[i] > 96 && clearMessage[i] < 123);
 		bool overlapCapitalized = (isCapitalized && (clearMessage[i] - this->getKey()) < 65);
 		bool overlapNotCapitalized = (isNotCapitalized && (clearMessage[i] - this->getKey()) < 97); 
 
