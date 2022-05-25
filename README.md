@@ -6,3 +6,4 @@ Already implemented cipher techniques:
 
 * Caesar (C++)
 * Playfair (Python)
+* Vigenère (Python)
