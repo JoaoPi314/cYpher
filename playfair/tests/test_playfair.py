@@ -37,12 +37,22 @@ def test_input_treatment(general_playfair):
 
     assert general_playfair.format_text(input_plain_text) == formated_text
 
-# def test_crypt(general_playfair):
-#     '''
-#     Tests if the cipher can encrypt a given plain text
-#     '''
+def test_crypt(general_playfair):
+    '''
+    Tests if the Playfair can encrypt a given plain text
+    '''
 
-#     plain_text = 'Hello World'
-#     expected_output = 'MOKYHPORBW'
+    plain_text = 'Hello World'
+    expected_output = 'MOKYHPORCHBV'
 
-#     assert general_playfair.crypt() == expected_output
+    assert general_playfair.crypt(plain_text) == expected_output
+
+def test_decrypt(general_playfair):
+    '''
+    Tests if the Playfair can decrypt a given cipher_message
+    '''
+    cipher_message = 'MOKYHPORCHBV'
+    expected_output = 'HELXLOWORLDX'
+
+    assert general_playfair.decrypt(cipher_message) == expected_output
+    

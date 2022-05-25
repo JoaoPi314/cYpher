@@ -63,6 +63,85 @@ class Playfair:
 		return x_between_repeated		
 
 	
+	def crypt(self, plain_text):
+
+		formated_text = self.format_text(plain_text)
+
+		# Iterates two by two
+		cipher_message = ''
+
+		for i in range(0, len(formated_text) - 1, 2):
+			actual_digram = formated_text[i:i+2]
+			
+			r_first_digram = np.where(self.key == actual_digram[0])[0][0]
+			c_first_digram = np.where(self.key == actual_digram[0])[1][0]
+
+			r_sec_digram = np.where(self.key == actual_digram[1])[0][0]
+			c_sec_digram = np.where(self.key == actual_digram[1])[1][0]
+
+			first_cipher_char = ''
+			sec_cipher_char = ''
+
+			# Rules of playfair
+			if r_first_digram == r_sec_digram:
+
+				first_cipher_char = self.key[r_first_digram][(c_first_digram+1)%5]
+				sec_cipher_char = self.key[r_sec_digram][(c_sec_digram+1)%5]
+
+				cipher_message += first_cipher_char + sec_cipher_char
+			elif c_first_digram == c_sec_digram:
+
+				first_cipher_char = self.key[(r_first_digram+1)%5][c_first_digram]
+				sec_cipher_char = self.key[(r_sec_digram+1)%5][c_sec_digram]
+
+				cipher_message += first_cipher_char + sec_cipher_char
+			else:
+				first_cipher_char = self.key[r_first_digram][c_sec_digram]
+				sec_cipher_char = self.key[r_sec_digram][c_first_digram]
+
+				cipher_message += first_cipher_char + sec_cipher_char
+
+		return cipher_message
+
+
+
+	def decrypt(self, cipher_message):
+
+		# Iterates two by two
+		decipher_message = ''
+
+		for i in range(0, len(cipher_message) - 1, 2):
+			actual_digram = cipher_message[i:i+2]
+			
+			r_first_digram = np.where(self.key == actual_digram[0])[0][0]
+			c_first_digram = np.where(self.key == actual_digram[0])[1][0]
+
+			r_sec_digram = np.where(self.key == actual_digram[1])[0][0]
+			c_sec_digram = np.where(self.key == actual_digram[1])[1][0]
+
+			first_decipher_char = ''
+			sec_decipher_char = ''
+
+			# Rules of playfair
+			if r_first_digram == r_sec_digram:
+
+				first_decipher_char = self.key[r_first_digram][(c_first_digram-1)%5]
+				sec_decipher_char = self.key[r_sec_digram][(c_sec_digram-1)%5]
+
+				decipher_message += first_decipher_char + sec_decipher_char
+			elif c_first_digram == c_sec_digram:
+
+				first_decipher_char = self.key[(r_first_digram-1)%5][c_first_digram]
+				sec_decipher_char = self.key[(r_sec_digram-1)%5][c_sec_digram]
+
+				decipher_message += first_decipher_char + sec_decipher_char
+			else:
+				first_decipher_char = self.key[r_first_digram][c_sec_digram]
+				sec_decipher_char = self.key[r_sec_digram][c_first_digram]
+
+				decipher_message += first_decipher_char + sec_decipher_char
+
+		return decipher_message
 
 
 
