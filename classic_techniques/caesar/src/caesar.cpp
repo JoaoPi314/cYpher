@@ -35,8 +35,8 @@ string Caesar::crypt(string clearMessage){
 
 	for(int i = 0; i < cipherMessage.length(); i++){
 		bool isCapitalized = (cipherMessage[i] > 64 && cipherMessage[i] < 91);
-		bool isNotCapitalized = (cipherMessage[i] > 96 && cipherMessage[i] < 122);
-		bool overlapCapitalized = (isCapitalized && (cipherMessage[i] + this->getKey()) > 91);
+		bool isNotCapitalized = (cipherMessage[i] > 96 && cipherMessage[i] < 123);
+		bool overlapCapitalized = (isCapitalized && (cipherMessage[i] + this->getKey()) > 90);
 		bool overlapNotCapitalized = (isNotCapitalized && (cipherMessage[i] + this->getKey()) > 122); 
 
 		bool overlapASCII = (cipherMessage[i] + this->getKey() > 126);
