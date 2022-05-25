@@ -12,10 +12,12 @@ class Playfair:
 		# Removes repeated characters from key
 		key_without_repetitions = ''.join(dict.fromkeys(key))
 		key_len = len(key_without_repetitions)
+
+
 		# Creates a string with the alphabet in uppercase
 		alphabet = string.ascii_uppercase
-		alphabet = alphabet.replace('IJ', 'J')
-
+		alphabet = alphabet.replace('IJ', 'I')
+		key_without_repetitions = key_without_repetitions.replace('J', 'I')
 
 		# Removes key letters from alphabet
 		for letter in key_without_repetitions:
@@ -25,7 +27,6 @@ class Playfair:
 		# Fills beginning of key
 		for i in range(key_len):
 			self.key[i] = key_without_repetitions[i]
-
 
 		# Fills rest of the key
 		for i in range(len(alphabet)):
@@ -40,11 +41,14 @@ class Playfair:
 		# Removes spaces
 		removed_spaces = plain_text.replace(' ', '')
 
+		# removes punctuation
+		removed_punctuation = removed_spaces.translate(str.maketrans('', '', string.punctuation))
+
 		# UpperCase
-		uppercase_text = removed_spaces.upper()
+		uppercase_text = removed_punctuation.upper()
 
 		# Replaces I by J
-		ij_replaced = uppercase_text.replace('I', 'J')
+		ij_replaced = uppercase_text.replace('J', 'I')
 
 		# Inserts X between repeated characters
 		x_between_repeated = ''
