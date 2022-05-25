@@ -1,3 +1,8 @@
 # cYpher - Reunião de várias cifras
 
-Esse repositório tem como objetivo reunir várias técnicas de cifragem, em várias linguagens diferentes. Além disso, sempre que possível será feita uma tentativa de ataque à determinada cifra, explorando as fraquezas de cada uma.
+This repository has as main goal gather multiples cipher techniques in multiples programming languages. Furthermore, whenever possible an attack attempt will be performed, epxloring the weakness of each technique.
+
+Already implemented cipher techniques:
+
+* Caesar (C++)
+* Playfair (Python)
