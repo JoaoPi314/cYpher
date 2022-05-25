@@ -37,10 +37,32 @@ class Playfair:
 
 	def format_text(self, plain_text):
 
-		#Removes spaces
-		
+		# Removes spaces
+		removed_spaces = plain_text.replace(' ', '')
 
+		# UpperCase
+		uppercase_text = removed_spaces.upper()
 
+		# Replaces I by J
+		ij_replaced = uppercase_text.replace('I', 'J')
+
+		# Inserts X between repeated characters
+		x_between_repeated = ''
+		for i in range(len(ij_replaced) - 1):
+			if ij_replaced[i] == ij_replaced[i+1]:
+				x_between_repeated = x_between_repeated + ij_replaced[i] + 'X'
+			else:
+				x_between_repeated += ij_replaced[i]
+
+		x_between_repeated += ij_replaced[-1]
+	
+		# Inserts X if len of string is odd
+		if len(x_between_repeated) % 2 == 1:
+			x_between_repeated += 'X'
+
+		return x_between_repeated		
+
+	
 
 
 
