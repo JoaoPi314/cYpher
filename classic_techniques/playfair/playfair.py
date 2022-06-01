@@ -50,21 +50,25 @@ class Playfair:
 		# Replaces I by J
 		ij_replaced = uppercase_text.replace('J', 'I')
 
-		# Inserts X between repeated characters
-		x_between_repeated = ''
-		for i in range(len(ij_replaced) - 1):
-			if ij_replaced[i] == ij_replaced[i+1]:
-				x_between_repeated = x_between_repeated + ij_replaced[i] + 'X'
+		x_fill = ''
+		i = 0
+
+		while(i < len(ij_replaced)):
+			digram = ij_replaced[i:i+2]
+
+			if(len(digram) == 2):
+				# Checks repeated
+				if(digram[0] == digram[1]):
+					x_fill += digram[0] + 'X'
+					i -= 1
+				else:
+					x_fill += digram
+
 			else:
-				x_between_repeated += ij_replaced[i]
-
-		x_between_repeated += ij_replaced[-1]
+				x_fill += digram + 'X'
+			i += 2
 	
-		# Inserts X if len of string is odd
-		if len(x_between_repeated) % 2 == 1:
-			x_between_repeated += 'X'
-
-		return x_between_repeated		
+		return x_fill	
 
 	
 	def crypt(self, plain_text):
