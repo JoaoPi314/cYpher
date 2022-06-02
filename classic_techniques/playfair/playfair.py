@@ -1,14 +1,31 @@
 import numpy as np
 import string
 
+'''
+PlayFair Cipher is a classic technique that uses a
+5x5 matrix to encrypt data.
+'''
 class Playfair:
+	
 	def __init__(self, key):
+		'''
+		The key is passed as string, the constructor will fill the
+		5x5 matrix with the given key
+		'''
 		self.key = np.zeros((25, 1), dtype='<U1')
 		self.__gen_key(key.upper())
+
+
 	def get_key(self):
 		return self.key
 
 	def __gen_key(self, key):
+		'''
+		Private method to generate the 5x5 matrix. It is private
+		because it is not supposed to be called by the user, only by the
+		class constructor
+		'''
+
 		# Removes repeated characters from key
 		key_without_repetitions = ''.join(dict.fromkeys(key))
 		key_len = len(key_without_repetitions)
@@ -36,7 +53,11 @@ class Playfair:
 
 
 
-	def format_text(self, plain_text):
+	def __format_text(self, plain_text):
+		'''
+		This private method will format the plain text considering the playfair
+		rules.
+		'''
 
 		# Removes spaces
 		removed_spaces = plain_text.replace(' ', '')
@@ -53,6 +74,8 @@ class Playfair:
 		x_fill = ''
 		i = 0
 
+		# Fills with 'X' between repeated digrams and at end of plain text is
+		# necessary
 		while(i < len(ij_replaced)):
 			digram = ij_replaced[i:i+2]
 
@@ -72,8 +95,10 @@ class Playfair:
 
 	
 	def crypt(self, plain_text):
-
-		formated_text = self.format_text(plain_text)
+		'''
+		The main method. It will encrypt a given plain text
+		'''
+		formated_text = self.__format_text(plain_text)
 
 		# Iterates two by two
 		cipher_message = ''
@@ -81,6 +106,7 @@ class Playfair:
 		for i in range(0, len(formated_text) - 1, 2):
 			actual_digram = formated_text[i:i+2]
 			
+			# Get rows and collumns of each digram in key
 			r_first_digram = np.where(self.key == actual_digram[0])[0][0]
 			c_first_digram = np.where(self.key == actual_digram[0])[1][0]
 
@@ -92,18 +118,19 @@ class Playfair:
 
 			# Rules of playfair
 			if r_first_digram == r_sec_digram:
-
+				# Cipher character is one to the right
 				first_cipher_char = self.key[r_first_digram][(c_first_digram+1)%5]
 				sec_cipher_char = self.key[r_sec_digram][(c_sec_digram+1)%5]
 
 				cipher_message += first_cipher_char + sec_cipher_char
 			elif c_first_digram == c_sec_digram:
-
+				# Cipher character is one down
 				first_cipher_char = self.key[(r_first_digram+1)%5][c_first_digram]
 				sec_cipher_char = self.key[(r_sec_digram+1)%5][c_sec_digram]
 
 				cipher_message += first_cipher_char + sec_cipher_char
 			else:
+				# Cipher character is the collumn of the other digram
 				first_cipher_char = self.key[r_first_digram][c_sec_digram]
 				sec_cipher_char = self.key[r_sec_digram][c_first_digram]
 
@@ -114,6 +141,9 @@ class Playfair:
 
 
 	def decrypt(self, cipher_message):
+		'''
+		This method will decrypt a given cipher message
+		'''
 
 		# Iterates two by two
 		decipher_message = ''
