@@ -1,10 +1,17 @@
 import numpy as np
 import string
 
+'''
+The vigenère is a cipher technique that consists in
+apply the caesar cipher to each charactere, with a 
+different key
+'''
 class Vigenere:
 
 	def __init__(self, key):
-		
+		'''
+		The constructor will only get the key passed by the user
+		'''
 		self.key_length = int(key.size)
 		self.key = key % 26
 		self.expanded_key = []
@@ -15,16 +22,15 @@ class Vigenere:
 	def get_key_length(self):
 		return self.key_length
 
-
 	def get_expanded_key(self):
 		return self.expanded_key
 
 
 	def expand_key(self, text_length):
-
-		n_of_integers_repetitions = text_length / self.key_length
-		n_of_last_looping = text_length % self.key_length
-
+		'''
+		This method will expand the key considering the size of the
+		plain text
+		'''
 		self.expanded_key = np.zeros((text_length,), dtype='int')
 
 		for i in range(text_length):
@@ -32,8 +38,12 @@ class Vigenere:
 
 
 	def caesar_single_char(self, charactere, key, crypt=True):
+		'''
+		This method will apply the caesar cipher in one charactere (encrypt and decrypt)
+		'''
 
 		output_char  = charactere
+		# Booleans to check overlap in ASCII table (c stands for crypt and d for decrypt)
 		overlap_lower_case_c = (str.islower(charactere) and (ord(charactere) + key > 122))
 		overlap_upper_case_c = (str.isupper(charactere) and (ord(charactere) + key > 90))
 		overlap_lower_case_d = (str.islower(charactere) and (ord(charactere) - key < 97))
@@ -53,7 +63,10 @@ class Vigenere:
 		return output_char
 
 	def crypt(self, plain_text, crypt=True):
-
+		'''
+		The crypt method can encrypt and decrypt
+		'''
+		
 		# Count text_length without spaces and punctuation
 		raw_text = plain_text.replace(' ', '')
 		raw_text = raw_text.translate(str.maketrans('', '', string.punctuation))
