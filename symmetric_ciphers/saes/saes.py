@@ -82,3 +82,14 @@ class Saes:
 
 		return output_state
 
+
+	def __shift_rows(self, state):
+		'''
+		Method to shift rows of state
+		'''
+
+		output_state = state.copy()
+		output_state[1][0] = state[1][1]
+		output_state[1][1] = state[1][0]
+
+		return output_state
