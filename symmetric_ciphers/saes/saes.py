@@ -72,3 +72,13 @@ class Saes:
 		self.expanded_key[4] = self.expanded_key[2] ^ (self.__g_function(self.expanded_key[3], 1))
 		self.expanded_key[5] = self.expanded_key[4] ^ self.expanded_key[3]
 
+
+	def __sub_nibble(self, state):
+		'''
+		Method that will apply the s-box in a given state os S-AES
+		'''
+		sub_nibbles = np.vectorize(self.__sub_unit_nibble)
+		output_state = sub_nibbles(state)
+
+		return output_state
+
