@@ -20,7 +20,7 @@ class Saes:
 
 		return output_byte
 
-	def __sub_nibble(self, nibble):
+	def __sub_unit_nibble(self, nibble):
 		'''
 		Method to substitute a nibble by a value of S-Box
 		'''
@@ -50,8 +50,8 @@ class Saes:
 		msb_nibble = output_byte >> 4
 		lsb_nibble = output_byte & 0x0F
 
-		msb_output_nibble =self.__sub_nibble(msb_nibble)
-		lsb_output_nibble =self.__sub_nibble(lsb_nibble)
+		msb_output_nibble =self.__sub_unit_nibble(msb_nibble)
+		lsb_output_nibble =self.__sub_unit_nibble(lsb_nibble)
 
 		output_byte = (msb_output_nibble << 4) ^ (lsb_output_nibble)
 
