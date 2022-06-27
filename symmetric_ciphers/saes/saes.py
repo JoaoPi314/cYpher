@@ -93,3 +93,16 @@ class Saes:
 		output_state[1][1] = state[1][0]
 
 		return output_state
+
+
+	def add_round_key(self, state, round_key):
+		'''
+		Method to add the round key to current state
+		'''
+		
+		output_state = state.copy()
+		
+		for idx, x in np.ndenumerate(state):
+			output_state[idx[0]][idx[1]] ^= round_key[idx[0]][idx[1]]
+
+		return output_state
