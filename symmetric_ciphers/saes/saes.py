@@ -95,7 +95,7 @@ class Saes:
 		return output_state
 
 
-	def add_round_key(self, state, round_key):
+	def __add_round_key(self, state, round_key):
 		'''
 		Method to add the round key to current state
 		'''
@@ -106,3 +106,28 @@ class Saes:
 			output_state[idx[0]][idx[1]] ^= round_key[idx[0]][idx[1]]
 
 		return output_state
+
+	def __gf16_mult(self, n1, n2):
+		'''
+		This method will implement a finite field multiplication (GF16) with
+		a LUT
+		'''
+
+		LUT = np.array([[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[]], dtype=np.uint8)
+
+		return LUT[n1][n2]
