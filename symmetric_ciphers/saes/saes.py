@@ -143,7 +143,6 @@ class Saes:
 		'''
 
 		output_state = np.zeros((2,2), dtype=np.uint8)
-		print()
 		output_state[0][0] = state[0][0] ^ self.__gf16_mult(4, state[1][0])
 		output_state[1][0] = self.__gf16_mult(4, state[0][0]) ^ state[1][0]
 		output_state[0][1] = state[0][1] ^ self.__gf16_mult(4, state[1][1])
@@ -177,6 +176,44 @@ class Saes:
 
 		return o_data
 
+	def __inv_sub_unit_nibble(self, nibble):
+		'''
+		Method to substitute a nibble by a value of inverse S-Box
+		'''
+						   #00  #01  #10  #11
+		s_box = np.array([[0xA, 0x5, 0x9, 0xB],  #00
+						  [0x1, 0x7, 0x8, 0xF],  #01
+						  [0x6, 0x0, 0x2, 0x3],  #10 
+						  [0xC, 0x4, 0xD, 0xE]]) #11
+
+		r_index = nibble >> 2
+		c_index = nibble & 0x3
+
+		return s_box[r_index][c_index]
+
+
+	def __inv_sub_nibble(self, state):
+		'''
+		Method that will apply the inverse s-box in a given state os S-AES
+		'''
+		sub_nibbles = np.vectorize(self.__inv_sub_unit_nibble)
+		output_state = sub_nibbles(state)
+
+		return output_state
+
+	def __inv_mix_columns(self, state):
+		'''
+		Method to perform the iMixColumn algorithm of SAES. It is a matrix multiplication
+		in GF16
+		'''
+
+		output_state = np.zeros((2,2), dtype=np.uint8)
+		output_state[0][0] = self.__gf16_mult(9, state[0][0]) ^ self.__gf16_mult(2, state[1][0])
+		output_state[1][0] = self.__gf16_mult(2, state[0][0]) ^ self.__gf16_mult(9, state[1][0])
+		output_state[0][1] = self.__gf16_mult(9, state[0][1]) ^ self.__gf16_mult(2, state[1][1])
+		output_state[1][1] = self.__gf16_mult(2, state[0][1]) ^ self.__gf16_mult(9, state[1][1])
+
+		return output_state
 
 	def crypt(self, i_data):
 		'''
@@ -209,6 +246,39 @@ class Saes:
 		o_data = self.__revert_state(state)
 
 		return o_data
+
+	def decrypt(self, cipher):
+		'''
+		Method to decrypt a given message
+		'''
+
+		# Format into state
+		state = self.__format_state(cipher)
+
+		# Round 0
+		round_key = self.__format_state(self.expanded_key[4:6])
+		state = self.__add_round_key(state, round_key)
+
+		# Round 1
+		state = self.__inv_sub_nibble(state)
+		state = self.__shift_rows(state)
+		state = self.__inv_mix_columns(state)
+		round_key = self.__format_state(self.expanded_key[2:4])
+		round_key = self.__inv_mix_columns(round_key)
+		state = self.__add_round_key(state, round_key)
+
+		# Round 2
+		state = self.__inv_sub_nibble(state)
+		state = self.__shift_rows(state)
+		round_key = self.__format_state(self.expanded_key[0:2])
+		state = self.__add_round_key(state, round_key)
+
+		o_data = self.__revert_state(state)
+
+		return o_data
+
+
+
 
 
 		
