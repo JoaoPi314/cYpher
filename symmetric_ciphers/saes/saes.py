@@ -15,7 +15,7 @@ class Saes:
 		'''
 		output_byte = input_byte << 4
 		output_byte = output_byte ^ (input_byte >> 4)
-		# Excludes the MSB nibble (Trash)
+		# Excludes the most significant nibble (Trash)
 		output_byte = output_byte  & 0x0FF
 
 		return output_byte
@@ -47,13 +47,13 @@ class Saes:
 		output_byte = self.__rot_nible(input_byte)
 
 		# Substitution
-		msb_nibble = output_byte >> 4
-		lsb_nibble = output_byte & 0x0F
+		ms_nibble = output_byte >> 4
+		ls_nibble = output_byte & 0x0F
 
-		msb_output_nibble =self.__sub_unit_nibble(msb_nibble)
-		lsb_output_nibble =self.__sub_unit_nibble(lsb_nibble)
+		ms_output_nibble = self.__sub_unit_nibble(ms_nibble)
+		ls_output_nibble = self.__sub_unit_nibble(ls_nibble)
 
-		output_byte = (msb_output_nibble << 4) ^ (lsb_output_nibble)
+		output_byte =  (ms_output_nibble << 4) ^ (ls_output_nibble)
 
 		# Rcon operation
 		output_byte = output_byte ^ (rcon[round] << 4)
@@ -130,7 +130,7 @@ class Saes:
 						[0xF, 0xD, 0x2, 0x9, 0x6, 0x4, 0xB, 0x1, 0xE, 0xC, 0x3, 0x8, 0x7, 0x5, 0xA]], #F
 						dtype=np.uint8)
 
-		if not n1&n2:
+		if (not n1 or not n2):
 			return 0x0
 		else:
 			return LUT[n1-1][n2-1]
@@ -142,12 +142,74 @@ class Saes:
 		in GF16
 		'''
 
-		output_state = state.copy()
-
+		output_state = np.zeros((2,2), dtype=np.uint8)
+		print()
 		output_state[0][0] = state[0][0] ^ self.__gf16_mult(4, state[1][0])
 		output_state[1][0] = self.__gf16_mult(4, state[0][0]) ^ state[1][0]
 		output_state[0][1] = state[0][1] ^ self.__gf16_mult(4, state[1][1])
 		output_state[1][1] = self.__gf16_mult(4, state[0][1]) ^ state[1][1]
 
 		return output_state
+
+
+	def __format_state(self, i_data):
+		'''
+		Method to convert the data into the 2x2 matrix
+		'''
+		state = np.zeros((2, 2), dtype=np.uint8)
+
+		state[0][0] = i_data[0] >> 4   #b0b1b2b3
+		state[1][0] = i_data[0] & 0x0F #b4b5b6b7
+		state[0][1] = i_data[1] >> 4   #b8b9bAbB
+		state[1][1] = i_data[1] & 0x0F #bCbDbEbF
+
+		return state
+
+
+	def __revert_state(self, state):
+		'''
+		Method to convert back the state into an array
+		'''
+		o_data = np.zeros((2,), dtype=np.uint8)
+
+		o_data[0] = (state[0][0] << 4) ^ state[1][0]
+		o_data[1] = (state[0][1] << 4) ^ state[1][1]
+
+		return o_data
+
+
+	def crypt(self, i_data):
+		'''
+		Main method. It will receive a 16 bit stream (already in format of an array
+		of 2 bytes) and perform the algorithm. The output will be an array of two bytes.
+		The user must decodificate this array into a bitstream or whatever the message should
+		be.
+		'''
+
+		# Format into state
+		state = self.__format_state(i_data)
+
+		# Round 0
+		round_key = self.__format_state(self.expanded_key[0:2])
+		state = self.__add_round_key(state, round_key)
+
+		# Round 1
+		state = self.__sub_nibble(state)
+		state = self.__shift_rows(state)
+		state = self.__mix_columns(state)
+		round_key = self.__format_state(self.expanded_key[2:4])
+		state = self.__add_round_key(state, round_key)
+
+		# Round 2
+		state = self.__sub_nibble(state)
+		state = self.__shift_rows(state)
+		round_key = self.__format_state(self.expanded_key[4:6])
+		state = self.__add_round_key(state, round_key)
+
+		o_data = self.__revert_state(state)
+
+		return o_data
+
+
+		
 
