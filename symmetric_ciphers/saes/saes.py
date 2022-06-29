@@ -133,4 +133,21 @@ class Saes:
 		if not n1&n2:
 			return 0x0
 		else:
-			return LUT[n1][n2]
+			return LUT[n1-1][n2-1]
+
+
+	def __mix_columns(self, state):
+		'''
+		Method to perform the mixColumn algorithm of SAES. It is a matrix multiplication
+		in GF16
+		'''
+
+		output_state = state.copy()
+
+		output_state[0][0] = state[0][0] ^ self.__gf16_mult(4, state[1][0])
+		output_state[1][0] = self.__gf16_mult(4, state[0][0]) ^ state[1][0]
+		output_state[0][1] = state[0][1] ^ self.__gf16_mult(4, state[1][1])
+		output_state[1][1] = self.__gf16_mult(4, state[0][1]) ^ state[1][1]
+
+		return output_state
+
