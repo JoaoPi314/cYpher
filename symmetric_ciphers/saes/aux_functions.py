@@ -2,8 +2,11 @@ import bitarray
 import numpy as np
 
 def string2bit(i_string):
+	'''
+	Converts a string to bitstream
+	'''
 	ba = bitarray.bitarray()
-	ba.frombytes(i_string.encode('utf-8'))
+	ba.frombytes(i_string.encode('ascii'))
 	i_list = ba.tolist()
 	o_bitstream = ''.join(map(str, i_list))
 	
@@ -11,8 +14,9 @@ def string2bit(i_string):
 
 
 def bit2bytearray(i_bitstream):
-
-	# Parses into interval of 1 byte
+	'''
+	Converts a bitstream into a byte array
+	'''
 	previous_i = 0
 	array_index = 0
 	byte_array = ['']*(int(len(i_bitstream) / 8))
@@ -26,4 +30,14 @@ def bit2bytearray(i_bitstream):
 
 	# There is no need to worry abou the bitstream length
 	return np.array(byte_array, dtype=np.uint8)
+
+
+def bytearray2string(i_bytearray):
+	'''
+	Converts a byte array into string
+	'''
+	message = [chr(i) for i in i_bytearray]
+	message = ''.join(map(str, message))
+
+	return message
 
