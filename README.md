@@ -4,6 +4,10 @@ This repository has as main goal gather multiples cipher techniques in multiples
 
 Already implemented cipher techniques:
 
-* Caesar (C++)
-* Playfair (Python)
-* Vigenère (Python)
+* Classic techniques:
+	* Caesar (C++)
+	* Playfair (Python)
+	* Vigenère (Python)
+* Block techniques
+	* S-AES (Python)
+
